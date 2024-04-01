@@ -12,6 +12,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddDbContext<WardrobeContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("WardrobeContext")));
 
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

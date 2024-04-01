@@ -1,0 +1,114 @@
+﻿@page "/new-item"
+@rendermode InteractiveWebAssembly
+@inject HttpClient client
+
+
+<div class="d-flex flex-column-reverse flex-md-row gap-3 p-3">
+
+    <EditForm OnSubmit="() => submit()" class="d-flex flex-column gap-2" style="min-width: 50%;" Model="WardrobeItem">
+        @* <select class="form-select" aria-label="item-type">
+        @foreach (var item in Enum.GetValues(typeof(ItemType)))
+        {
+        <option value="@item">@item</option>
+        }
+        </select> *@
+        <div class="mb-3">
+            <button type="button" class="bg-white border border-3 rounded-3 @(selectedType == ItemType.Top ? "border-success" : "border-danger")"
+                    style="height: 100px; width: 100px;"
+                    @onclick="() => SetSelected(ItemType.Top)">
+                <img src="images/soutline.jpg" alt="shirt" class="w-100 h-100" />
+
+            </button>
+            <button type="button" class="bg-white border border-3 rounded-3 @(selectedType == ItemType.Bottom ? "border-success" : "border-danger")"
+                    style="height: 100px; width: 100px;"
+                    @onclick="() => SetSelected(ItemType.Bottom)">
+                <img src="images/poutline.jpg" alt="shirt" class="w-100 h-100" />
+            </button>
+            <button type="button" class="bg-white border border-3 rounded-3 @(selectedType == ItemType.Footwear ? "border-success" : "border-danger")"
+                    style="height: 100px; width: 100px;"
+                    @onclick="() => SetSelected(ItemType.Footwear)">
+                <img src="images/shoutline.jpg" alt="shirt" class="w-100 h-100" />
+            </button>
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="cool jeans" @bind="WardrobeItem.Name">
+        </div>
+        <div class="mb-3">
+            <label for="color" class="form-label">Color</label>
+            <input type="text" class="form-control" id="color" placeholder="blue" @bind="WardrobeItem.Color">
+            </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" rows="3" @bind="WardrobeItem.Description"></textarea>
+        </div>
+
+        <InputFile OnChange="@SelectFile" multiple="false" accept="image/*" class="form-control">
+            <label for="fileInput">Select Image</label>
+        </InputFile>
+
+        
+        <div class="mb-3 w-100">
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            <button type="reset" class="btn btn-secondary mt-3">Reset</button>
+
+        </div>
+
+        <NavLink class="nav-link" href="/">Back to Home</NavLink>
+
+        
+
+    </EditForm>
+
+    @if(imageSrc != "")
+    {
+        <div style="min-width: 50%;" class="text-center mb-2">
+        <p>Image preview</p>
+        <img src="@imageSrc" alt="image" class="w-75"/>
+
+    </div>
+    }
+    
+</div>
+
+@code {
+    public WardrobeItem WardrobeItem { get; set; } = new WardrobeItem();
+    ItemType? selectedType = null!;
+    string imageSrc = "";
+
+    public void SetSelected(ItemType itemType)
+    {
+        selectedType = itemType;
+        WardrobeItem.ItemType = itemType;
+    }
+    private IBrowserFile? selectedFile;
+    // private string uploadError;
+
+    private async Task SelectFile(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        var buffer = new byte[selectedFile.Size];
+        await selectedFile.OpenReadStream().ReadAsync(buffer);
+        var imageData = $"data:{selectedFile.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        imageSrc = imageData;
+
+    }
+
+    void submit()
+    {
+        try
+        {
+
+            
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    Console.WriteLine("Submitted");
+        // WardrobeService.AddItem(WardrobeItem);
+        Console.WriteLine(WardrobeItem.Name);
+        Console.WriteLine(WardrobeItem.ItemType);
+    }
+
+}
