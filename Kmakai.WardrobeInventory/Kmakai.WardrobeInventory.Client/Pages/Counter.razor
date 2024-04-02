@@ -1,19 +1,30 @@
 ﻿@page "/counter"
 @rendermode InteractiveWebAssembly
+@inject HttpClient client
 
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
 
-<p role="status">Current count: @currentCount</p>
+<p>Current item: @item?.Name</p>
+<img src="@item?.Image?.ImageUrl" alt="item" class="w-100 h-100" />
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<p>
+    @item?.Image?.ImageUrl
+</p>
+
 
 @code {
-    private int currentCount = 0;
 
-    private void IncrementCount()
+    private WardrobeItem? item;
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        item = await GetItem();
     }
+
+    private async Task<WardrobeItem?> GetItem()
+    {
+        return await client.GetFromJsonAsync<WardrobeItem>($"https://localhost:7103/api/wardrobe/item/{17}");
+    }
+
 }

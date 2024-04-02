@@ -3,15 +3,12 @@
 @inject HttpClient client
 
 
+
+
 <div class="d-flex flex-column-reverse flex-md-row gap-3 p-3">
 
     <EditForm OnSubmit="() => submit()" class="d-flex flex-column gap-2" style="min-width: 50%;" Model="WardrobeItem">
-        @* <select class="form-select" aria-label="item-type">
-        @foreach (var item in Enum.GetValues(typeof(ItemType)))
-        {
-        <option value="@item">@item</option>
-        }
-        </select> *@
+  
         <div class="mb-3">
             <button type="button" class="bg-white border border-3 rounded-3 @(selectedType == ItemType.Top ? "border-success" : "border-danger")"
                     style="height: 100px; width: 100px;"
@@ -37,7 +34,7 @@
         <div class="mb-3">
             <label for="color" class="form-label">Color</label>
             <input type="text" class="form-control" id="color" placeholder="blue" @bind="WardrobeItem.Color">
-            </div>
+        </div>
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
             <textarea class="form-control" id="description" rows="3" @bind="WardrobeItem.Description"></textarea>
@@ -47,7 +44,7 @@
             <label for="fileInput">Select Image</label>
         </InputFile>
 
-        
+
         <div class="mb-3 w-100">
             <button type="submit" class="btn btn-primary mt-3">Submit</button>
             <button type="reset" class="btn btn-secondary mt-3">Reset</button>
@@ -56,19 +53,19 @@
 
         <NavLink class="nav-link" href="/">Back to Home</NavLink>
 
-        
+
 
     </EditForm>
 
-    @if(imageSrc != "")
+    @if (imageSrc != "")
     {
         <div style="min-width: 50%;" class="text-center mb-2">
-        <p>Image preview</p>
-        <img src="@imageSrc" alt="image" class="w-75"/>
+            <p>Image preview</p>
+            <img src="@imageSrc" alt="image" class="w-75" />
 
-    </div>
+        </div>
     }
-    
+
 </div>
 
 @code {
@@ -81,34 +78,89 @@
         selectedType = itemType;
         WardrobeItem.ItemType = itemType;
     }
+
+
     private IBrowserFile? selectedFile;
     // private string uploadError;
 
     private async Task SelectFile(InputFileChangeEventArgs e)
-    {
+    {        
         selectedFile = e.File;
+
         var buffer = new byte[selectedFile.Size];
-        await selectedFile.OpenReadStream().ReadAsync(buffer);
+        var bytesRead = await selectedFile.OpenReadStream().ReadAsync(buffer);
+
+        if (bytesRead != buffer.Length)
+        {
+            Console.WriteLine("Error reading file");
+            return;
+        }
+
         var imageData = $"data:{selectedFile.ContentType};base64,{Convert.ToBase64String(buffer)}";
         imageSrc = imageData;
 
+        Console.WriteLine(selectedFile.ContentType);
+        Console.WriteLine(selectedFile.Size);
+        Console.WriteLine(selectedFile.Name);
+
     }
 
-    void submit()
+    private async Task<WardrobeItem?> submitItem()
     {
-        try
+        int id = 0;
+        if (WardrobeItem != null)
         {
+            var response = await client.PostAsJsonAsync("/api/wardrobe/item", WardrobeItem);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Item added successfully");
 
+                Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
+               return await response.Content.ReadFromJsonAsync<WardrobeItem>();
+            }
+            else
+            {
+                Console.WriteLine("Item add failed");
+            }
             
         }
-        catch (Exception ex)
+
+        return null;
+    }
+
+
+
+    async Task submitImage(WardrobeItem item)
+    {
+       
+
+
+        if(selectedFile != null)
         {
-            Console.WriteLine(ex.Message);
+            var imageContent = new MultipartFormDataContent();
+            imageContent.Add(new StreamContent(selectedFile.OpenReadStream(selectedFile.Size)), selectedFile.Name, selectedFile.Name);
+            var response = await client.PostAsync($"/api/wardrobe/item/{item.Id}/Image", imageContent);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Image uploaded successfully");
+            }
+            else
+            {
+                Console.WriteLine("Image upload failed");
+            }
         }
-    Console.WriteLine("Submitted");
-        // WardrobeService.AddItem(WardrobeItem);
-        Console.WriteLine(WardrobeItem.Name);
-        Console.WriteLine(WardrobeItem.ItemType);
+    }
+
+
+    async Task submit()
+    {
+        // await submitImage();
+       var item = await submitItem();
+       if(item != null)
+         {
+              await submitImage(item);
+         }
     }
 
 }

@@ -2,6 +2,7 @@ using Kmakai.WardrobeInventory.Client.Pages;
 using Kmakai.WardrobeInventory.Components;
 using Microsoft.EntityFrameworkCore;
 using Kmakai.WardrobeInventory.Context;
+using Kmakai.WardrobeInventory.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,11 @@ builder.Services.AddRazorComponents()
 builder.Services.AddDbContext<WardrobeContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("WardrobeContext")));
 
+builder.Services.AddScoped<WardrobeService>();
+
 builder.Services.AddHttpClient();
+
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -36,5 +41,7 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Kmakai.WardrobeInventory.Client._Imports).Assembly);
+
+app.MapControllers();
 
 app.Run();
