@@ -4,6 +4,7 @@ using Kmakai.WardrobeInventory.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kmakai.WardrobeInventory.Migrations
 {
     [DbContext(typeof(WardrobeContext))]
-    partial class WardrobeContextModelSnapshot : ModelSnapshot
+    [Migration("20240402223827_WardrobeUpdated1")]
+    partial class WardrobeUpdated1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
