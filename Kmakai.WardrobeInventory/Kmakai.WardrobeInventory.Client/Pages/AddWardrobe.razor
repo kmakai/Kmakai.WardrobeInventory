@@ -146,14 +146,15 @@
         return Items!.Where(x => x.ItemType == type).ToList();
     }
 
-    private void TaskCompleted()
+    private async Task Save()
     {
-        newWardrobe = new Wardrobe();
-        newWardrobe.Name = wardrobeName;
-        newWardrobe.Top = shirt;
-        newWardrobe.Bottom = pants;
-        newWardrobe.Footwear = shoes;
-        client.PostAsJsonAsync("https://localhost:7103/api/wardrobe", newWardrobe);
+        newWardrobe = new Wardrobe
+        {
+            Name = wardrobeName,
+            Items = new List<WardrobeItem> { shirt, pants, shoes }
+        };
+
+        await client.PostAsJsonAsync("https://localhost:7103/api/wardrobe", newWardrobe);
     }
 
 
