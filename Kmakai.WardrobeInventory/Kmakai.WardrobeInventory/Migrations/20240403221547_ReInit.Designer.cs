@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kmakai.WardrobeInventory.Migrations
 {
     [DbContext(typeof(WardrobeContext))]
-    [Migration("20240402223827_WardrobeUpdated1")]
-    partial class WardrobeUpdated1
+    [Migration("20240403221547_ReInit")]
+    partial class ReInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -75,7 +75,7 @@ public class WardrobeService
 
     public async Task<List<WardrobeItem>> GetItems()
     {
-        return await _context.WardrobeItems.ToListAsync();
+        return await _context.WardrobeItems.Include(i => i.Image).ToListAsync();
     }
 
    

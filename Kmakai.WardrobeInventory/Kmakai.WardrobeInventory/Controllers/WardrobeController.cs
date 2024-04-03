@@ -65,5 +65,13 @@ namespace Kmakai.WardrobeInventory.Controllers
            
         }
 
+        [HttpGet]
+        [Route("items")]
+        public async Task<ActionResult<List<WardrobeItem>>> GetItems()
+        {
+            var result = await _wardrobeService.GetItems();
+            return Ok(result);
+        }
+
     }
 }

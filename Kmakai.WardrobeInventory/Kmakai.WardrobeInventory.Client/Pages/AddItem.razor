@@ -3,8 +3,6 @@
 @inject HttpClient client
 
 
-
-
 <div class="d-flex flex-column-reverse flex-md-row gap-3 p-3">
 
     <EditForm OnSubmit="() => submit()" class="d-flex flex-column gap-2" style="min-width: 50%;" Model="WardrobeItem">
@@ -46,8 +44,7 @@
 
 
         <div class="mb-3 w-100">
-            <button type="submit" class="btn btn-primary mt-3">Submit</button>
-            <button type="reset" class="btn btn-secondary mt-3">Reset</button>
+            <button type="submit" class="btn btn-primary mt-3" disabled="">Submit</button>
 
         </div>
 
@@ -107,7 +104,6 @@
 
     private async Task<WardrobeItem?> submitItem()
     {
-        int id = 0;
         if (WardrobeItem != null)
         {
             var response = await client.PostAsJsonAsync("/api/wardrobe/item", WardrobeItem);

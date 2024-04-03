@@ -9,5 +9,4 @@ public class Wardrobe
     public WardrobeItem? Bottom { get; set; }
     public WardrobeItem? Footwear { get; set; }
 
-
 }

@@ -1,0 +1,24 @@
+﻿
+<button @onclick="() => click(Item!)" class="card" style="width: 100px;">
+    <img src="@Item?.Image?.ImageUrl" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title fs-6">@Item?.Name</h5>
+        <small class="card-text">@Item?.Description</small>
+    </div>
+</button>
+
+@code {
+
+    [Parameter]
+    public WardrobeItem? Item { get; set; }
+
+    [Parameter]
+    public EventCallback<WardrobeItem> Clicked { get; set; }
+
+    private Task click(WardrobeItem item
+    )
+    {
+        return Clicked.InvokeAsync(Item);
+    }
+
+}

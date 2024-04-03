@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kmakai.WardrobeInventory.Migrations
 {
     [DbContext(typeof(WardrobeContext))]
-    [Migration("20240401223622_Initial")]
-    partial class Initial
+    [Migration("20240402225208_ReInintialize")]
+    partial class ReInintialize
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,10 +33,25 @@ namespace Kmakai.WardrobeInventory.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("BottomId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FootwearId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TopId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("BottomId");
+
+                    b.HasIndex("FootwearId");
+
+                    b.HasIndex("TopId");
 
                     b.ToTable("wardrobes");
                 });
@@ -80,16 +95,32 @@ namespace Kmakai.WardrobeInventory.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("WardrobeId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ImageId");
 
-                    b.HasIndex("WardrobeId");
-
                     b.ToTable("WardrobeItems");
+                });
+
+            modelBuilder.Entity("Shared.Models.Wardrobe", b =>
+                {
+                    b.HasOne("Shared.Models.WardrobeItem", "Bottom")
+                        .WithMany()
+                        .HasForeignKey("BottomId");
+
+                    b.HasOne("Shared.Models.WardrobeItem", "Footwear")
+                        .WithMany()
+                        .HasForeignKey("FootwearId");
+
+                    b.HasOne("Shared.Models.WardrobeItem", "Top")
+                        .WithMany()
+                        .HasForeignKey("TopId");
+
+                    b.Navigation("Bottom");
+
+                    b.Navigation("Footwear");
+
+                    b.Navigation("Top");
                 });
 
             modelBuilder.Entity("Shared.Models.WardrobeItem", b =>
@@ -98,16 +129,7 @@ namespace Kmakai.WardrobeInventory.Migrations
                         .WithMany()
                         .HasForeignKey("ImageId");
 
-                    b.HasOne("Shared.Models.Wardrobe", null)
-                        .WithMany("Items")
-                        .HasForeignKey("WardrobeId");
-
                     b.Navigation("Image");
-                });
-
-            modelBuilder.Entity("Shared.Models.Wardrobe", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
