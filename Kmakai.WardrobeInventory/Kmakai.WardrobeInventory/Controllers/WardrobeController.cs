@@ -16,6 +16,21 @@ namespace Kmakai.WardrobeInventory.Controllers
             _wardrobeService = wardrobeService;
         }
 
+        // wardrobe CRUD
+        [HttpPost]
+        public async Task<ActionResult<Wardrobe>> AddWardrobe(Wardrobe wardrobe)
+        {
+            var result = await _wardrobeService.CreateWardrobe(wardrobe);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Wardrobe>>> GetWardrobes()
+        {
+            var result = await _wardrobeService.GetWardrobes();
+            return Ok(result);
+        }
+
         // Item CRUD
         [HttpPost]
         [Route("item")]

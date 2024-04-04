@@ -1,0 +1,113 @@
+﻿@page "/"
+@rendermode InteractiveWebAssembly
+@inject HttpClient client
+
+<div class="d-flex flex-md-row flex-column ">
+    <div class="d-flex flex-column p-4 gap-4">
+        <h4>@(selectedWardrobe?.Name ?? "Select Wardrobe")</h4>
+        <div class="d-flex gap-2">
+            <div class="border border-2 @(selectedWardrobe != null ? "border-success" :  "border-danger") rounded-2 " style="width: 100px; height: 100px; overflow: hidden;">
+                <img src=@(selectedWardrobe?.Top?.Image?.ImageUrl ?? "images/soutline.jpg") alt="Alternate Text" class="w-100 h-100" />
+            </div>
+            <div style="width:100px;" class="">
+                Shirt
+                <div class="d-flex flex-column">
+                    <small>
+                        @(selectedWardrobe?.Top?.Name ?? "No shirt selected")
+                    </small>
+                    <small>
+                        @(selectedWardrobe?.Top?.Description ?? "")
+                    </small><small>
+                        @(selectedWardrobe?.Top?.Color ?? "")
+                    </small>
+
+                </div>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <div class="border border-2 @(selectedWardrobe != null ? "border-success" :  "border-danger") rounded-2" style="width: 100px; height: 100px; overflow: hidden;">
+                <img src=@(selectedWardrobe?.Bottom?.Image?.ImageUrl ?? "images/soutline.jpg") alt="Alternate Text" class="w-100 h-100" />
+            </div>
+            <div style="width:100px;" class="">
+                Pants
+                <div class="d-flex flex-column">
+                    <small>
+                        @(selectedWardrobe?.Bottom?.Name ?? "No shirt selected")
+                    </small>
+                    <small>
+                        @(selectedWardrobe?.Bottom?.Description ?? "")
+                    </small><small>
+                        @(selectedWardrobe?.Bottom?.Color ?? "")
+                    </small>
+
+                </div>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <div class="border border-2 @(selectedWardrobe != null ? "border-success" :  "border-danger") rounded-2" style="width: 100px; height: 100px; overflow: hidden;">
+                <img src=@(selectedWardrobe?.Footwear?.Image?.ImageUrl ?? "images/soutline.jpg") alt="Alternate Text" class="w-100 h-100" />
+            </div>
+            <div style="width:100px;" class="">
+                Pants
+                <div class="d-flex flex-column">
+                    <small>
+                        @(selectedWardrobe?.Footwear?.Name ?? "No shirt selected")
+                    </small>
+                    <small>
+                        @(selectedWardrobe?.Footwear?.Description ?? "")
+                    </small><small>
+                        @(selectedWardrobe?.Footwear?.Color ?? "")
+                    </small>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="p-4 w-100">
+        <h4>Wardrobes</h4>
+        <table class="table w-100">
+           
+            <tbody>
+                @foreach (var wardrobe in wardrobes!)
+                {
+                    <tr @onclick="() => selectedWardrobe = wardrobe" class="w-75 d-flex align-items-center justify-content-evenly border border-2 my-2 rounded @(selectedWardrobe == wardrobe ? "shadow border-success" : "")" style="cursor:pointer;">
+                        <td style="width: 100px;border: none;">@wardrobe.Name</td>
+                        <td style="width: 100px;border: none;">
+                            <img src=@(wardrobe?.Top?.Image?.ImageUrl ?? "images/soutline.jpg") alt="shirt" class="w-100 h-100" />
+                        </td>
+                        <td style="width: 100px;border: none;">
+                            <img src=@(wardrobe?.Bottom?.Image?.ImageUrl ?? "images/poutline.jpg") alt="pants" class="w-100 h-100" />
+                        </td>
+                        <td style="width: 100px;border: none;">
+                            <img src=@(wardrobe?.Footwear?.Image?.ImageUrl ?? "images/shoutline.jpg") alt="shoes" class="w-100 h-100" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+</div>
+
+
+@code {
+
+    private List<Wardrobe>? wardrobes = new List<Wardrobe>();
+    private Wardrobe? selectedWardrobe;
+
+    protected override async Task OnInitializedAsync()
+    {
+        wardrobes = await LoadWardrobes();
+    }
+
+    private async Task<List<Wardrobe>?> LoadWardrobes()
+    {
+        return await client.GetFromJsonAsync<List<Wardrobe>>("https://localhost:7103/api/wardrobe");
+
+    }
+}

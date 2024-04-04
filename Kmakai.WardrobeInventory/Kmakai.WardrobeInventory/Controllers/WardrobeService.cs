@@ -20,7 +20,8 @@ public class WardrobeService
 
     public async Task<List<Wardrobe>> GetWardrobes()
     {
-        return await _context.wardrobes.ToListAsync();
+        return await _context.wardrobes.Include(w => w.Footwear).ThenInclude(f => f.Image)
+            .Include(w => w.Bottom).ThenInclude(b => b.Image).Include(w => w.Top).ThenInclude(t => t.Image).ToListAsync();
     }
 
     public async Task<Wardrobe> CreateWardrobe(Wardrobe wardrobe)

@@ -2,9 +2,9 @@
 @rendermode InteractiveWebAssembly
 @inject HttpClient client
 
-<h3>New wardrobe</h3>
 <div class="d-flex flex-md-row flex-column ">
     <div class="d-flex flex-column p-4 gap-4">
+        <h4>New wardrobe</h4>
         <div class="d-flex gap-2">
             <div class="border border-2 @(shirt != null ? "border-success" :  "border-danger") rounded-2" style="min-width: 100px; height: 100px; overflow: hidden;">
                 <img src=@(shirt?.Image?.ImageUrl ?? "images/soutline.jpg") alt="Alternate Text" class="w-100 h-100" />
@@ -64,11 +64,11 @@
         </div>
 
         <div class="d-flex gap-2">
-            <input type="text" class="form-control" placeholder="Wardrobe Name" @bind="wardrobeName" />
+            <input type="text" class="form-control" placeholder="Wardrobe Name" @bind="wardrobeName" @bind:event="oninput" />
         </div>
 
         <div>
-            <button class="btn btn-primary" disabled="@(shirt == null || pants == null || shoes == null)">Save</button>
+            <button class="btn btn-primary" disabled="@(shirt == null || pants == null || shoes == null || wardrobeName == string.Empty)" @onclick="Save">Save</button>
             <button class="btn btn-secondary" @onclick="Reset">reset</button>
 
         </div>
@@ -148,13 +148,16 @@
 
     private async Task Save()
     {
-        newWardrobe = new Wardrobe
-        {
-            Name = wardrobeName,
-            Items = new List<WardrobeItem> { shirt, pants, shoes }
-        };
+        newWardrobe = new Wardrobe();
+        newWardrobe.Name = wardrobeName;
+        newWardrobe.TopId = shirt.Id;
+        newWardrobe.BottomId = pants.Id;
+        newWardrobe.FootwearId = shoes.Id;
 
-        await client.PostAsJsonAsync("https://localhost:7103/api/wardrobe", newWardrobe);
+       var response = await client.PostAsJsonAsync("https://localhost:7103/api/wardrobe", newWardrobe);
+
+       var json = await response.Content.ReadAsStringAsync();
+       Console.WriteLine(json);
     }
 
 
