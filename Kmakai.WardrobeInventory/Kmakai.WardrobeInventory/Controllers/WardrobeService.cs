@@ -15,7 +15,8 @@ public class WardrobeService
 
     public async Task<Wardrobe?> GetWardrobe(int id)
     {
-        return await _context.wardrobes.FindAsync(id);
+        return await _context.wardrobes.Include(w => w.Footwear).ThenInclude(f => f.Image)
+            .Include(w => w.Bottom).ThenInclude(b => b.Image).Include(w => w.Top).ThenInclude(t => t.Image).FirstOrDefaultAsync(w => w.Id == id);
     }
 
     public async Task<List<Wardrobe>> GetWardrobes()

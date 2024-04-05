@@ -1,10 +1,18 @@
 ﻿@page "/new-wardrobe"
+@page "/edit-wardrobe/{id}"
 @rendermode InteractiveWebAssembly
 @inject HttpClient client
 
 <div class="d-flex flex-md-row flex-column ">
     <div class="d-flex flex-column p-4 gap-4">
-        <h4>New wardrobe</h4>
+        @if (id != "")
+        {
+            <h4>Edit wardrobe</h4>
+        }
+        else
+        {
+            <h4>New wardrobe</h4>
+        }
         <div class="d-flex gap-2">
             <div class="border border-2 @(shirt != null ? "border-success" :  "border-danger") rounded-2" style="min-width: 100px; height: 100px; overflow: hidden;">
                 <img src=@(shirt?.Image?.ImageUrl ?? "images/soutline.jpg") alt="Alternate Text" class="w-100 h-100" />
@@ -68,7 +76,14 @@
         </div>
 
         <div>
-            <button class="btn btn-primary" disabled="@(shirt == null || pants == null || shoes == null || wardrobeName == string.Empty)" @onclick="Save">Save</button>
+            @if (id != "")
+            {
+                <button class="btn btn-primary" disabled="@(shirt == null || pants == null || shoes == null || wardrobeName == string.Empty)" @onclick="Update">Update</button>
+            }
+            else
+            {
+                <button class="btn btn-primary" disabled="@(shirt == null || pants == null || shoes == null || wardrobeName == string.Empty)" @onclick="Save">Save</button>
+            }
             <button class="btn btn-secondary" @onclick="Reset">reset</button>
 
         </div>
@@ -99,6 +114,8 @@
 </div>
 
 @code {
+    [Parameter]
+    public string id { get; set; } = "";
 
     private List<WardrobeItem>? wardrobeItems = new List<WardrobeItem>();
     private WardrobeItem shirt { get; set; } = null!;
@@ -109,7 +126,32 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (!string.IsNullOrEmpty(id))
+        {
+            await GetWardrobe();
+        }
+
         wardrobeItems = await GetItems();
+
+
+    }
+
+    private async Task GetWardrobe()
+    {
+      
+        var response = await client.GetFromJsonAsync<Wardrobe>($"https://localhost:7103/api/wardrobe/{id}");
+       
+
+        if (response == null)
+        {
+            return;
+        }
+
+        shirt = response!.Top!;
+        pants = response!.Bottom!;
+        shoes = response!.Footwear!;
+        wardrobeName = response!.Name!;
+
     }
 
     private async Task<List<WardrobeItem>?> GetItems()
@@ -133,11 +175,20 @@
         }
     }
 
-    private void Reset()
+    private async Task Reset()
     {
-        shirt = null!;
-        pants = null!;
-        shoes = null!;
+        if (!string.IsNullOrEmpty(id))
+        {
+            await GetWardrobe();
+        }
+        else
+        {
+            shirt = null!;
+            pants = null!;
+            shoes = null!;
+            wardrobeName = "";
+        }
+
     }
 
     private async Task<List<WardrobeItem>> GetFilteredItems(ItemType type)
@@ -154,10 +205,24 @@
         newWardrobe.BottomId = pants.Id;
         newWardrobe.FootwearId = shoes.Id;
 
-       var response = await client.PostAsJsonAsync("https://localhost:7103/api/wardrobe", newWardrobe);
+        var response = await client.PostAsJsonAsync("https://localhost:7103/api/wardrobe", newWardrobe);
 
-       var json = await response.Content.ReadAsStringAsync();
-       Console.WriteLine(json);
+        var json = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(json);
+    }
+
+    private async Task Update()
+    {
+        newWardrobe = new Wardrobe();
+        newWardrobe.Name = wardrobeName;
+        newWardrobe.TopId = shirt.Id;
+        newWardrobe.BottomId = pants.Id;
+        newWardrobe.FootwearId = shoes.Id;
+
+        var response = await client.PutAsJsonAsync($"https://localhost:7103/api/wardrobe/{id}", newWardrobe);
+
+        var json = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(json);
     }
 
 

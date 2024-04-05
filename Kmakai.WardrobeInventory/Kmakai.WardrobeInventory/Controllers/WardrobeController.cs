@@ -31,6 +31,13 @@ namespace Kmakai.WardrobeInventory.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Wardrobe>> GetWardrobe(int id)
+        {
+            var result = await _wardrobeService.GetWardrobe(id);
+            return Ok(result);
+        }
+
         // Item CRUD
         [HttpPost]
         [Route("item")]
