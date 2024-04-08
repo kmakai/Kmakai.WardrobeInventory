@@ -2,6 +2,7 @@
 @page "/edit-wardrobe/{id}"
 @rendermode InteractiveWebAssembly
 @inject HttpClient client
+@inject NavigationManager navigationManager
 
 <div class="d-flex flex-md-row flex-column ">
     <div class="d-flex flex-column p-4 gap-4">
@@ -14,7 +15,7 @@
             <h4>New wardrobe</h4>
         }
         <div class="d-flex gap-2">
-            <div class="border border-2 @(shirt != null ? "border-success" :  "border-danger") rounded-2" style="min-width: 100px; height: 100px; overflow: hidden;">
+            <div class="border border-2 @(shirt != null ? "border-success" :  "border-danger") rounded-2" style="width: 100px; height: 100px; overflow: hidden;">
                 <img src=@(shirt?.Image?.ImageUrl ?? "images/soutline.jpg") alt="Alternate Text" class="w-100 h-100" />
             </div>
             <div style="width:100px;" class="">
@@ -33,7 +34,7 @@
             </div>
         </div>
         <div class="d-flex gap-2">
-            <div class="border border-2 @(pants != null ? "border-success" :  "border-danger") rounded-2" style="min-width: 100px; height: 100px; overflow: hidden;">
+            <div class="border border-2 @(pants != null ? "border-success" :  "border-danger") rounded-2" style="width: 100px; height: 100px; overflow: hidden;">
                 <img src=@(pants?.Image?.ImageUrl ?? "images/poutline.jpg") alt="Alternate Text" class="w-100 h-100" />
             </div>
             <div style="width:100px;" class="">
@@ -52,7 +53,7 @@
             </div>
         </div>
         <div class="d-flex gap-2">
-            <div class="border border-2 @(shoes != null ? "border-success" :  "border-danger") rounded-2" style="min-width: 100px; height: 100px; overflow: hidden;">
+            <div class="border border-2 @(shoes != null ? "border-success" :  "border-danger") rounded-2" style="width: 100px; height: 100px; overflow: hidden;">
                 <img src=@(shoes?.Image?.ImageUrl ?? "images/shoutline.jpg") alt="Alternate Text" class="w-100 h-100" />
             </div>
             <div style="width:100px;" class="">
@@ -75,8 +76,8 @@
             <input type="text" class="form-control" placeholder="Wardrobe Name" @bind="wardrobeName" @bind:event="oninput" />
         </div>
 
-        <div>
-            @if (id != "")
+        <div class="d-flex gap-2">
+            @if (!string.IsNullOrEmpty(id))
             {
                 <button class="btn btn-primary" disabled="@(shirt == null || pants == null || shoes == null || wardrobeName == string.Empty)" @onclick="Update">Update</button>
             }
@@ -208,21 +209,24 @@
         var response = await client.PostAsJsonAsync("https://localhost:7103/api/wardrobe", newWardrobe);
 
         var json = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(json);
+        
+        navigationManager.NavigateTo("/");
     }
 
     private async Task Update()
     {
         newWardrobe = new Wardrobe();
+        newWardrobe.Id = int.Parse(id);
         newWardrobe.Name = wardrobeName;
         newWardrobe.TopId = shirt.Id;
         newWardrobe.BottomId = pants.Id;
         newWardrobe.FootwearId = shoes.Id;
 
-        var response = await client.PutAsJsonAsync($"https://localhost:7103/api/wardrobe/{id}", newWardrobe);
+        var response = await client.PutAsJsonAsync($"https://localhost:7103/api/wardrobe", newWardrobe);
 
         var json = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(json);
+        
+        navigationManager.NavigateTo("/");
     }
 
 

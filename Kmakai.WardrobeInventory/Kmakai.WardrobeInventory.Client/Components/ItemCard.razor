@@ -1,11 +1,21 @@
 ﻿
-<button @onclick="() => click(Item!)" class="card" style="width: 100px;">
-    <img src="@Item?.Image?.ImageUrl" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title fs-6">@Item?.Name</h5>
-        <small class="card-text">@Item?.Description</small>
+<div class="card d-flex flex-column align-items-center" style="width: 140px;">
+    <button @onclick="() => click(Item!)" class="btn " style="">
+        <img src="@Item?.Image?.ImageUrl" class="card-img-top" alt="@Item?.ItemType.ToString()" style="width:100px;height:100px;">
+        <div class="card-body w-100">
+            <h5 class="card-title fs-6">@Item?.Name</h5>
+
+        </div>
+    </button>
+    <div class="d-flex gap-2 mt-auto">
+            <NavLink class="btn btn-outline-primary border border-0" href=@($"/edit-item/{Item?.Id}")>              
+                edit
+            </NavLink>
+            <button class="btn btn-outline-danger border border-0">               
+                remove
+            </button>
     </div>
-</button>
+</div>
 
 @code {
 

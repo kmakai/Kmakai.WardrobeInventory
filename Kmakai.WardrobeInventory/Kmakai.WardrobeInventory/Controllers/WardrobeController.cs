@@ -38,6 +38,20 @@ namespace Kmakai.WardrobeInventory.Controllers
             return Ok(result);
         }
 
+        [HttpPut]
+        public async Task<ActionResult<Wardrobe>> UpdateWardrobe(Wardrobe wardrobe)
+        {
+            var result = await _wardrobeService.UpdateWardrobe(wardrobe);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteWardrobe(int id)
+        {
+            await _wardrobeService.DeleteWardrobe(id);
+            return Ok();
+        }
+
         // Item CRUD
         [HttpPost]
         [Route("item")]
@@ -92,6 +106,14 @@ namespace Kmakai.WardrobeInventory.Controllers
         public async Task<ActionResult<List<WardrobeItem>>> GetItems()
         {
             var result = await _wardrobeService.GetItems();
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("item")]
+        public async Task<ActionResult<WardrobeItem>> UpdateItem(WardrobeItem item)
+        {
+            var result = await _wardrobeService.UpdateItem(item);
             return Ok(result);
         }
 
