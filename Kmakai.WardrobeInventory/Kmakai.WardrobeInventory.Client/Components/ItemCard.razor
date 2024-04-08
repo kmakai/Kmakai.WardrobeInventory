@@ -4,16 +4,15 @@
         <img src="@Item?.Image?.ImageUrl" class="card-img-top" alt="@Item?.ItemType.ToString()" style="width:100px;height:100px;">
         <div class="card-body w-100">
             <h5 class="card-title fs-6">@Item?.Name</h5>
-
         </div>
     </button>
     <div class="d-flex gap-2 mt-auto">
-            <NavLink class="btn btn-outline-primary border border-0" href=@($"/edit-item/{Item?.Id}")>              
-                edit
-            </NavLink>
-            <button class="btn btn-outline-danger border border-0">               
-                remove
-            </button>
+        <NavLink class="btn btn-outline-primary border border-0" href=@($"/edit-item/{Item?.Id}")>
+            edit
+        </NavLink>
+        <button class="btn btn-outline-danger border border-0">
+            remove
+        </button>
     </div>
 </div>
 
