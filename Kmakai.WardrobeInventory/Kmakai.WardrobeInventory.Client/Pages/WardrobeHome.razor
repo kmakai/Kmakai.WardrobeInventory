@@ -5,11 +5,11 @@
 <div class="d-flex flex-md-row flex-column">
     <div class="d-flex flex-column p-4 gap-4">
         <h4>@(selectedWardrobe?.Name ?? "Select Wardrobe")</h4>
-        <div class="d-flex gap-2" style="width: 300px;">
-            <div class="border border-2 @(selectedWardrobe != null ? "border-success" :  "border-danger") rounded-2 " style="width: 100px; height: 100px; overflow: hidden;">
+        <div class="d-flex gap-2">
+            <div class="border border-2 @(selectedWardrobe != null ? "border-success" :  "border-danger") rounded-2 " style="width: 100px;overflow: hidden;">
                 <img src=@(selectedWardrobe?.Top?.Image?.ImageUrl ?? "images/soutline.jpg") alt="Alternate Text" class="w-100 h-100" />
             </div>
-            <div style="" class="">               
+            <div style="width: 200px;" class="">
                 <div class="d-flex flex-column gap-2">
                     <small>
                        name: @(selectedWardrobe?.Top?.Name ?? "No shirt selected")
@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="d-flex gap-2">
-            <div class="border border-2 @(selectedWardrobe != null ? "border-success" :  "border-danger") rounded-2" style="width: 100px; height: 100px; overflow: hidden;">
+            <div class="border border-2 @(selectedWardrobe != null ? "border-success" :  "border-danger") rounded-2" style="width: 100px; overflow: hidden;">
                 <img src=@(selectedWardrobe?.Bottom?.Image?.ImageUrl ?? "images/poutline.jpg") alt="Alternate Text" class="w-100 h-100" />
             </div>
             <div style="" class="">
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="d-flex gap-2">
-            <div class="border border-2 @(selectedWardrobe != null ? "border-success" :  "border-danger") rounded-2" style="width: 100px; height: 100px; overflow: hidden;">
+            <div class="border border-2 @(selectedWardrobe != null ? "border-success" :  "border-danger") rounded-2" style="width: 100px; overflow: hidden;">
                 <img src=@(selectedWardrobe?.Footwear?.Image?.ImageUrl ?? "images/soutline.jpg") alt="Alternate Text" class="w-100 h-100" />
             </div>
             <div style="width:215px;" class="">
